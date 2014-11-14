@@ -1,6 +1,0 @@
-c:\users\leilikun\documents\visual studio 2013\Projects\TestTokenizer\TestTokenizer\bin\Debug\TestTokenizer.exe.config
-c:\users\leilikun\documents\visual studio 2013\Projects\TestTokenizer\TestTokenizer\obj\Debug\TestTokenizer.csprojResolveAssemblyReference.cache
-c:\users\leilikun\documents\visual studio 2013\Projects\TestTokenizer\TestTokenizer\bin\Debug\TestTokenizer.exe
-c:\users\leilikun\documents\visual studio 2013\Projects\TestTokenizer\TestTokenizer\bin\Debug\TestTokenizer.pdb
-c:\users\leilikun\documents\visual studio 2013\Projects\TestTokenizer\TestTokenizer\obj\Debug\TestTokenizer.exe
-c:\users\leilikun\documents\visual studio 2013\Projects\TestTokenizer\TestTokenizer\obj\Debug\TestTokenizer.pdb
