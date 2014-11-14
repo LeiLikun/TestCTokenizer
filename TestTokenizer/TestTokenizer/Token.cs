@@ -80,7 +80,9 @@ namespace TestTokenizer
             COMMA,
             SEMICOLON,
             SPACE,
-            END_OF_LINE,
+            END_OF_LINE_R,
+            END_OF_LINE_N, //which means it's running on Windows
+            EOF,
 
             NUMBER_VALUE,
 
@@ -88,7 +90,8 @@ namespace TestTokenizer
 
             COMMENT,  //such as this
 
-            EOF,
+            STRING_CONTENT,
+            CHAR_CONTENT,
 
             UNKNOWN
         }
@@ -111,6 +114,11 @@ namespace TestTokenizer
         public TokenValue getValue()
         {
             return this.value;
+        }
+
+        public string outPutToken()
+        {
+            return "Token type: " + this.type + "\t Token value: " + this.value + "\t Token content: " + this.strValue;
         }
     }
 }

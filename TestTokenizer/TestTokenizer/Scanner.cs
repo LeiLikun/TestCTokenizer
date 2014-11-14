@@ -39,6 +39,8 @@ namespace TestTokenizer
                 state = State.NORMAL;
                 error = String.Empty;
                 allToken = new List<Token>();
+
+                currentChar = ' ';
             }
         }
 
@@ -127,7 +129,7 @@ namespace TestTokenizer
                         state = State.NORMAL;
                         break;
                     case State.IDENTIFIER:
-                        while (!dictionary.isDelimiter(currentChar) || Char.IsLetterOrDigit(currentChar)) 
+                        while (!dictionary.isDelimiter(currentChar) && Char.IsLetterOrDigit(currentChar)) 
                         //TODO: bug:可能读到文件尾
                         {
                             readNextChar();
@@ -177,24 +179,49 @@ namespace TestTokenizer
                     case State.STRING:
                         if (currentChar == '\'')
                         {
+                            readNextChar(); //read left '
+                            readNextChar(); //read the single char
+                            if (currentChar == '\'')
+                            {
+                                readNextChar(); //read right '
+                                Token charToken = new Token(Token.TokenType.Char, Token.TokenValue.CHAR_CONTENT, buffer.Substring(1,1)); //cut the single quotation marks
+                                allToken.Add(charToken);
+                                clearBuffer();
+                                state = State.NORMAL;
+                            }
+                            else
+                            {
+                                state = State.WRONG;
+                                error = "Illegal form of char!";
+                            }
+                        }
+                        else if (currentChar == '\"')
+                        {
                             readNextChar();
-                            while (currentChar != '\'')
+                            while (currentChar != '\"' && (int)currentChar != -1)
                             {
                                 readNextChar();
                             }
-                            //todo
-
-                        }
-                        else if (currentChar == '\"')
-                        { 
-                            
+                            if ((int)currentChar == -1)
+                            {
+                                state = State.WRONG;
+                                error = "Right quotation not found!";
+                            }
+                            else
+                            {
+                                readNextChar();
+                                Token stringToken = new Token(Token.TokenType.String, Token.TokenValue.STRING_CONTENT, buffer.Substring(1, buffer.Length - 2)); //cut the quotation marks
+                                allToken.Add(stringToken);
+                                clearBuffer();
+                                state = State.NORMAL;
+                            }
                         }
                         break;
                     case State.WRONG:
-                        break;
+                        Console.WriteLine("Error found:" + error + "!");
+                        return;
                 }
 
-                currentChar = (char)source.Read();
             }
         }
 

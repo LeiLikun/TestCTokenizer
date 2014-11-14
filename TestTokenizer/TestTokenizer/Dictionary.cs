@@ -76,7 +76,6 @@ namespace TestTokenizer
             operatorValueDictionary.Add('-', Token.TokenValue.MINUS);
             operatorValueDictionary.Add('>', Token.TokenValue.BIGGER_THAN);
             operatorValueDictionary.Add('<', Token.TokenValue.LESS_THAN);
-            operatorValueDictionary.Add(';', Token.TokenValue.SEMICOLON);
         }
 
         private void addDelimiter()
@@ -84,7 +83,9 @@ namespace TestTokenizer
             delimiterValueDictionary.Add(';', Token.TokenValue.SEMICOLON);
             delimiterValueDictionary.Add(' ', Token.TokenValue.SPACE);
             delimiterValueDictionary.Add(',', Token.TokenValue.COMMA);
-            delimiterValueDictionary.Add('\n', Token.TokenValue.END_OF_LINE);
+            delimiterValueDictionary.Add('\r', Token.TokenValue.END_OF_LINE_R);
+            delimiterValueDictionary.Add('\n', Token.TokenValue.END_OF_LINE_N);
+            //delimiterValueDictionary.Add((char)(-1), Token.TokenValue.EOF);
         }
         public bool isKeyWord(string str)
         {
