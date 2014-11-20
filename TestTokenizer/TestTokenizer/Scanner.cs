@@ -24,7 +24,10 @@ namespace TestTokenizer
         {
             try
             {
-                FileStream fs = new FileStream(fileName, FileMode.Open);
+                FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.ReadWrite);
+                fs.Seek(0, SeekOrigin.End);
+                fs.Write(BitConverter.GetBytes(' '), 0, 1); //Add additonal space to the end of the file
+                fs.Seek(0, SeekOrigin.Begin);
                 StreamReader sr = new StreamReader(fs);
                 this.source = sr;
             }
@@ -82,7 +85,7 @@ namespace TestTokenizer
         }
         public void StateChange()
         {
-            while (!source.EndOfStream)
+            while (!source.EndOfStream )
             {
                 switch (state)
                 {

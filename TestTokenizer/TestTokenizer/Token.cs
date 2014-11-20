@@ -116,6 +116,11 @@ namespace TestTokenizer
             return this.value;
         }
 
+        public string getStrValue()
+        {
+            return this.strValue;
+        }
+
         public string outPutToken()
         {
             return "Token type: " + this.type + "\t Token value: " + this.value + "\t Token content: " + this.strValue;

@@ -1,0 +1,8 @@
+*.sln
+*.config
+*.suo
+
+Debug/
+Release/
+obj/
+
