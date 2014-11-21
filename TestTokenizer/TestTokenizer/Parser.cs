@@ -76,16 +76,16 @@ namespace TestTokenizer
             Stack<char> symbol = new Stack<char>();
             Stack<int> state = new Stack<int>();
             state.Push(0);
-            symbol.Push(';');
 
             List<Token>.Enumerator ip = tokens.GetEnumerator();
+            ip.MoveNext();
             while (true)
             {
-                char ch = getSymbolValue(ip.Current);
+                char ch = getSymbolValue(ip.Current); //current char
                 if (ch != '#')
                 {
-                    int S = terminateDic[ch];
-                    int a = state.Peek();
+                    int S = state.Peek();
+                    int a = terminateDic[ch];
                     string str = action[S, a];
 
                     if (str.Equals(ERROR))
@@ -98,28 +98,33 @@ namespace TestTokenizer
                         int stateNumber = str[1] - '0';
                         state.Push(stateNumber);
                         symbol.Push(ch);
-                        Console.WriteLine("移进符号 "+ch);
+                        Console.WriteLine("移进符号 " + ch);
                         ip.MoveNext();
                     }
                     else if (str[0] == 'r')
                     {
                         int k = str[1] - '0';
-                        int lengthOfExp = expr[k].Item2.Length;
+                        int lengthOfExp = expr[k-1].Item2.Length;
                         for (; lengthOfExp > 0; lengthOfExp--)
                         {
                             state.Pop();
                             Console.WriteLine("弹出 " + symbol.Pop());
                         }
-                        symbol.Push(expr[k].Item1);
-                        Console.WriteLine("按"+expr[k].Item1+"="+expr[k].Item2+"进行规约");
-                        int stateToPush = go[state.Peek(), gotoDic[expr[k].Item1]];
+                        symbol.Push(expr[k-1].Item1);
+                        Console.WriteLine("按" + expr[k-1].Item1 + "->" + expr[k-1].Item2 + "进行规约");
+                        Console.WriteLine("压入 "+expr[k-1].Item1);
+                        int stateToPush = go[state.Peek(), gotoDic[expr[k-1].Item1]];
                         state.Push(stateToPush);
                     }
                     else
                     {
                         Console.WriteLine("Success!");
+                        return;
                     }
+                    Console.WriteLine("===========================");
                 }
+                else
+                    ip.MoveNext();
             }
         }
 
@@ -127,12 +132,12 @@ namespace TestTokenizer
         {
             if (token.getType() == Token.TokenType.Number)
                 return 'i';
-            else if (token.getType() == Token.TokenType.Identifier)
+            else if (token.getType() == Token.TokenType.Operator)
             {
                 string value = token.getStrValue();
                 return value[0];
             }
-            else if (token.getValue() == Token.TokenValue.COMMA)
+            else if (token.getValue() == Token.TokenValue.SEMICOLON)
             {
                 return ';';
             }
