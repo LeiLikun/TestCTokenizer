@@ -65,15 +65,22 @@ namespace TestTokenizer
         private Dictionary<char, int> gotoDic;
         private Tuple<char, string>[] expr;
         private const string ERROR = "error";
+        private const int NAN = -999;
 
         private Tuple<char,string> makeTuple(char first,string second)
         {
             return new Tuple<char, string>(first, second);
         }
 
+        private struct mark
+        {
+            public char ch;
+            public int value;
+        }
+
         public void parse()
         {
-            Stack<char> symbol = new Stack<char>();
+            Stack<mark> symbol = new Stack<mark>();
             Stack<int> state = new Stack<int>();
             state.Push(0);
 
@@ -81,11 +88,11 @@ namespace TestTokenizer
             ip.MoveNext();
             while (true)
             {
-                char ch = getSymbolValue(ip.Current); //current char
-                if (ch != '#')
+                mark m = getSymbolValue(ip.Current); //current mark
+                if (m.ch != '#')
                 {
                     int S = state.Peek();
-                    int a = terminateDic[ch];
+                    int a = terminateDic[m.ch];
                     string str = action[S, a];
 
                     if (str.Equals(ERROR))
@@ -97,22 +104,56 @@ namespace TestTokenizer
                     {
                         int stateNumber = Int32.Parse(str.Substring(1,str.Length-1));
                         state.Push(stateNumber);
-                        symbol.Push(ch);
-                        Console.WriteLine("移进符号 " + ch);
+                        symbol.Push(m);
+                        Console.WriteLine("移进符号 " + m.ch);
                         ip.MoveNext();
                     }
                     else if (str[0] == 'r')
                     {
                         int k = str[1] - '0';
                         int lengthOfExp = expr[k-1].Item2.Length;
-                        for (; lengthOfExp > 0; lengthOfExp--)
+                        mark pushMark = new mark();
+
+                        if (lengthOfExp == 1)
                         {
                             state.Pop();
-                            Console.WriteLine("弹出 " + symbol.Pop());
+                            mark popMark = symbol.Pop();
+                            Console.WriteLine("弹出 " + popMark.ch);
+                            pushMark.value = popMark.value;
                         }
-                        symbol.Push(expr[k-1].Item1);
+                        else if (lengthOfExp == 3)
+                        {
+                            if (expr[k - 1].Item2[0] == '(')
+                            {
+                                symbol.Pop();
+                                mark popMark = symbol.Pop();
+                                symbol.Pop();
+                                Console.WriteLine("弹出 (E)");
+                                pushMark.value = popMark.value;
+                            }
+                            else if (expr[k - 1].Item2[1] == '+')
+                            {
+                                mark popMark1 = symbol.Pop();
+                                symbol.Pop();
+                                mark popMark2 = symbol.Pop();
+                                Console.WriteLine("弹出 E+T");
+                                pushMark.value = popMark1.value + popMark2.value;
+                            }
+                            else
+                            {
+                                mark popMark1 = symbol.Pop();
+                                symbol.Pop();
+                                mark popMark2 = symbol.Pop();
+                                Console.WriteLine("弹出 T*F");
+                                pushMark.value = popMark1.value * popMark2.value;
+                            }
+                            for (int i = 0; i < 3; i++) state.Pop();
+                        }
+                        pushMark.ch = expr[k - 1].Item1;
+                        symbol.Push(pushMark);
+
                         Console.WriteLine("按" + expr[k-1].Item1 + "->" + expr[k-1].Item2 + "进行规约");
-                        Console.WriteLine("压入 "+expr[k-1].Item1);
+                        Console.WriteLine("压入 "+expr[k-1].Item1 + " 值为 " + pushMark.value);
                         int stateToPush = go[state.Peek(), gotoDic[expr[k-1].Item1]];
                         state.Push(stateToPush);
                     }
@@ -128,21 +169,30 @@ namespace TestTokenizer
             }
         }
 
-        private char getSymbolValue(Token token)
+        private mark getSymbolValue(Token token)
         {
+            mark m = new mark();
             if (token.getType() == Token.TokenType.Number)
-                return 'i';
+            {
+                m.ch = 'i';
+                m.value = Int32.Parse(token.getStrValue());
+            }
             else if (token.getType() == Token.TokenType.Operator)
             {
-                string value = token.getStrValue();
-                return value[0];
+                m.ch = token.getStrValue()[0];
+                m.value = NAN;
             }
             else if (token.getValue() == Token.TokenValue.SEMICOLON)
             {
-                return ';';
+                m.ch = ';';
+                m.value = NAN;
             }
             else
-                return '#';
+            {
+                m.ch = '#';
+                m.value = NAN;
+            }
+            return m;
         }
     }
 }
