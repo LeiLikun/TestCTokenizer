@@ -95,7 +95,7 @@ namespace TestTokenizer
                     }
                     else if (str[0] == 's')
                     {
-                        int stateNumber = str[1] - '0';
+                        int stateNumber = Int32.Parse(str.Substring(1,str.Length-1));
                         state.Push(stateNumber);
                         symbol.Push(ch);
                         Console.WriteLine("移进符号 " + ch);
