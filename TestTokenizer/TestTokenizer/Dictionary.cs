@@ -80,11 +80,14 @@ namespace TestTokenizer
 
         private void addDelimiter()
         {
+            delimiterValueDictionary.Add('{',Token.TokenValue.LEFT_BRACE);
+            delimiterValueDictionary.Add('}',Token.TokenValue.RIGHT_BRACE);
             delimiterValueDictionary.Add(';', Token.TokenValue.SEMICOLON);
             delimiterValueDictionary.Add(' ', Token.TokenValue.SPACE);
             delimiterValueDictionary.Add(',', Token.TokenValue.COMMA);
             delimiterValueDictionary.Add('\r', Token.TokenValue.END_OF_LINE_R);
             delimiterValueDictionary.Add('\n', Token.TokenValue.END_OF_LINE_N);
+            delimiterValueDictionary.Add('\t', Token.TokenValue.TAB);
             //delimiterValueDictionary.Add((char)(-1), Token.TokenValue.EOF);
         }
         public bool isKeyWord(string str)
