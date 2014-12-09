@@ -14,10 +14,6 @@ namespace TestTokenizer
             Scanner scanner = new Scanner("test.c");
             scanner.StateChange();
             List<Token> list = scanner.getAllToken();
-            //foreach (Token token in list)
-            //{
-            //    Console.WriteLine(token.outPutToken());
-            //}
             List<Token>.Enumerator ip = list.GetEnumerator();
             while (ip.MoveNext())
             {
