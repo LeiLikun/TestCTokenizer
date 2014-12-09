@@ -77,11 +77,14 @@ namespace TestTokenizer
             LESS_THAN,
 
             //Delimiter
+            LEFT_BRACE,
+            RIGHT_BRACE,
             COMMA,
             SEMICOLON,
             SPACE,
             END_OF_LINE_R,
             END_OF_LINE_N, //which means it's running on Windows
+            TAB,
             EOF,
 
             NUMBER_VALUE,
